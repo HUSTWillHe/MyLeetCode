@@ -28,6 +28,23 @@ vector<int> findChar(string s, int idx, char c){
     return v;
 }
 
+void dotStar(string s, int idx, char& c, int& dot_num, int& first_char_index){
+    // idx is the index after dot-star
+    // c is the first char after dots and stars
+    // dot_num is the count of dots
+    c = '-';
+    dot_num = 0;
+    for(int i = idx; i < s.size(); i++){
+        if(s[i] >= 'a' && s[i] <= 'z'){
+            c = s[i];
+            return;
+        }
+        else if(s[i] == '.' && i + 1 < s.size() && s[i + 1] != '*'){
+            dot_num++;
+        }
+    }
+}
+
 bool isMatch(string s, string p){
     int p_size = p.size();
     int si = 0;
@@ -40,23 +57,44 @@ bool isMatch(string s, string p){
             if(pi + 1 < p_size && cntChar(p, pi+1, '*') > 0){
                 //dot with star
                 //FIXME: dot star does not mean a series of same char, it means any chars in random number.
-                log("dot with star\n");
-                int star_num = cntChar(p, pi+1, '*');
-                log("star_num: " + to_string(star_num));
-                if(pi + star_num + 1 < p_size){
-                    int char_num_p = cntChar(p, pi+star_num+1,s[si]);
-                    int char_num_s = cntChar(s,si,s[si]);
-                    if(char_num_s < char_num_p)
-                        return false;
-                    else{
-                        pi += star_num + char_num_p;
-                        si += char_num_s;
-                    }
-                }else{
-                    int num_s = cntChar(s, si, s[si]);
-                    if(si + num_s == s.size()){
+                /*log("dot with star\n");*/
+                //int star_num = cntChar(p, pi+1, '*');
+                //log("star_num: " + to_string(star_num));
+                //if(pi + star_num + 1 < p_size){
+                    //int char_num_p = cntChar(p, pi+star_num+1,s[si]);
+                    //int char_num_s = cntChar(s,si,s[si]);
+                    //if(char_num_s < char_num_p)
+                        //return false;
+                    //else{
+                        //pi += star_num + char_num_p;
+                        //si += char_num_s;
+                    //}
+                //}else{
+                    //int num_s = cntChar(s, si, s[si]);
+                    //if(si + num_s == s.size()){
+                        //return true;
+                    //}else{
+                        //return false;
+                    //}
+                /*}*/
+                int star_num = cntChar(p, pi + 1, '*');
+                int dot_num = 0;
+                char first_char = '-';
+                int first_char_idx = -1;
+                dotStar(s, pi + star_num, first_char, dot_num, first_char_idx);
+                if(first_char == '-'){
+                    if(s.size() - si >= dot_num)
                         return true;
-                    }else{
+                    else
+                        return false;
+                }else{
+                    vector<int> v_match_chars =  findChar(s, si + dot_num, first_char);
+                    if(v_match_chars.size() == 0) return false;
+                    else{
+                        for(int i = 0; i< v_match_chars.size(); i++){
+                            if(isMatch(s.substr(v_match_chars[i]), p.substr(first_char_idx)))
+                                return true;
+                        }
                         return false;
                     }
                 }
