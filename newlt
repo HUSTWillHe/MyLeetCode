@@ -1,4 +1,4 @@
-#!/usr/bin/env bash -e
+#!/bin/bash -e
 cd `dirname $0`
 if [[ x$1 == x ]]; then
     echo "usage: $0 <file_name>"
