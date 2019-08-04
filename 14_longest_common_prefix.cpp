@@ -5,11 +5,17 @@ using namespace std;
 
 string longestCommonPrefix(vector<string>& strs){
     int ret = 0;
+    int size = strs.size();
+    if(size == 0) return "";
+    if(size == 1) return strs[0];
+    vector<int> s_size;
+    for(int i = 0; i< size;i++){
+        s_size.push_back(strs[i].size());
+    }
     while(1){
-        for(auto s: strs){
-            cout<<"ret: "<<ret<<" s[ret]: "<<s[ret]<<" strs[0][ret]: " << strs[0][ret]<< endl;
-            if(ret == s.size() || s[ret] != strs[0][ret]){
-                return s.substr(0, ret);
+        for(int i = 1; i < size ;i++){
+            if(ret >= s_size[i] || strs[i][ret] != strs[0][ret]){
+                return strs[i].substr(0, ret);
             }
         }
         ret++;
@@ -21,7 +27,7 @@ int main(){
     vector<string> strs = {"flower", "flow", "flight"};
     string s = longestCommonPrefix(strs);
     cout<<s<<endl;
-    strs = {"lower", "flow", "flight"};
+    strs = {};
     s = longestCommonPrefix(strs);
     cout<<s<<endl;
 }
