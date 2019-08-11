@@ -5,46 +5,6 @@
 
 using namespace std;
 
-vector<vector<int>> threeSum(vector<int> &nums){
-    vector<vector<int>> vv;
-    sort(nums.begin(), nums.end());
-    int size = nums.size();
-    for(int i = 0; i<nums.size();i++){
-        int a = i+1;
-        int b = size -1;
-        while(b > a){
-            if(nums[a] + nums[b] > -nums[i]){
-                b--;
-            }else if(nums[a] + nums[b] < -nums[i]){
-                a++;
-            }else{
-                vv.push_back({nums[i], nums[a], nums[b]});
-                b--;
-            }
-        }
-    }
-    vv.erase(unique(vv.begin(), vv.end()), vv.end());
-    return vv;
-}
-
-int main(int argc,char** argv){
-    vector<int> nums = {-1, 0, 1, 2, -1, -4};
-    vector<vector<int>> vv = threeSum(nums);
-    for(auto v: vv){
-        for(auto a: v){
-            cout<<a<<endl;
-        }
-        cout<<"\n\n"<<endl;
-    }
-    return 0;
-}
-#include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
-
-using namespace std;
-
 int threeSumClosest(vector<int> & nums, int target){
     sort(nums.begin(), nums.end());
     int size = nums.size();
@@ -58,6 +18,7 @@ int threeSumClosest(vector<int> & nums, int target){
                 int delta = nums[i] + nums[b] + nums[e] - target;
                 if(min_delta == -1){
                     min_delta = delta;
+                    rst_sum = target + delta;
                 }else{
                     if(delta < min_delta){
                         min_delta = delta;
@@ -71,6 +32,7 @@ int threeSumClosest(vector<int> & nums, int target){
                 int delta = target - nums[i] + nums[b] + nums[e];
                 if(min_delta == -1){
                     min_delta = delta;
+                    rst_sum = target - delta;
                 }else{
                     if(delta < min_delta){
                         min_delta = delta;
@@ -90,8 +52,8 @@ int threeSumClosest(vector<int> & nums, int target){
 }
 
 int main(int argc,char** argv){
-    vector<int> v{-1, 2, 1, -4};
-    int i = threeSumClosest(v, 1);
+    vector<int> v{1,1,-1};
+    int i = threeSumClosest(v, 2);
     cout<<"rst: "<<i<<endl;
 
     return 0;
