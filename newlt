@@ -5,6 +5,12 @@ if [[ x$1 == x ]]; then
     exit -1
 fi
 
-touch $1.cpp
-eval cat sample.cpp >> $1.cpp
-eval vim $1.cpp
+file_name=$1
+touch $file_name
+suffix="${file_name##*.}"
+if [[ $suffix == cpp ]]; then
+    eval cat sample.cpp >> $file_name
+elif [[ $suffix == py ]]; then
+    eval cat sample.py >> $file_name
+fi
+eval vim $file_name
