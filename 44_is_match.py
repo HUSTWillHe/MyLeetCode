@@ -10,36 +10,23 @@ class Solution:
                 return False
         return True
 
-    def countQuestion(self, s:str) -> List[int]:
-        size = len(s)
-        if size == 0:
-            return [0, 0]
-        head = tail = 0
-        for i in range(size):
-            if s[i] == '?':
-                head += 1
+    def compare(self, s:str, sub:str) -> bool:
+        for i in range(len(sub)):
+            if sub[i] == "?" or sub[i] == str[i]:
+                continue
             else:
-                break;
-        for i in range(size - 1, -1, -1):
-            if s[i] == '?':
-                tail += 1
-            else:
-                break
-        return [head, tail]
-
-    def indexAllQuesion(self, s:str)->List[int]:
-        ans = []
-        for i in range(len(s)):
-            if s[i] == "?":
-                ans.append(i)
-        return ans
+                return False 
+        return True
 
     def nearestIdx(self, s:str, sub:str) -> int:
+        ans = -1
         head, tail = self.countQuestion(sub)
         new_s = s[head:-tail]
-        idx_q = self.indexAllQuesion(new_s)
-
-        return 0
+        for i in range(len(new_s)):
+            if i == sub[0]:
+                if self.compare(new_s[i:], sub):
+                    ans = head + i
+        return ans
 
     def isMatch(self, s, p):
         '''
@@ -59,9 +46,7 @@ class Solution:
 def main():
     s = Solution()
     a = "hqpgh???hgap8hg??"
-    l = s.indexAllQuesion(a)
-    for i in l:
-        print(i)
+    i = s.nearestIdx()
     return
 
 if __name__ == "__main__":
