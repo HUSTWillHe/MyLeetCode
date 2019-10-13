@@ -5,6 +5,8 @@ from typing import List
 
 class Solution:
     def allStar(self, s) -> bool:
+        if s == "":
+            return False
         for i in s:
             if i != "*":
                 return False
@@ -25,6 +27,8 @@ class Solution:
         return [head, tail]
 
     def compare(self, s:str, sub:str) -> bool:
+        if len(sub) > len(s):
+            return False
         for i in range(len(sub)):
             if sub[i] == "?" or sub[i] == s[i]:
                 continue
@@ -40,11 +44,14 @@ class Solution:
             return -1
         ans = -1
         head, tail = self.countQuestion(sub)
-        print("head %d, tail %d" %(head, tail))
         if head == len(sub):
             return 0
-        new_s = s[head:-tail]
-        new_sub = sub[head:-tail]
+        if tail == 0:
+            new_s = s[head:]
+            new_sub = sub[head:]
+        else:
+            new_s = s[head:-tail]
+            new_sub = sub[head:-tail]
         for i in range(len(new_s)):
             if new_s[i] == new_sub[0]:
                 if self.compare(new_s[i:], new_sub):
@@ -56,22 +63,43 @@ class Solution:
         '''
         process star singly, process ? and normal characters in one method.
         '''
+        if self.allStar(p):
+            return True
         if p == "" and s == "":
             return True
         if p == "" and s != "":
             return False
         if s == "" and p != "":
-            if self.allStar(p):
-                return True
             return False
+        if p.find("*") == -1:
+            if len(s) != len(p):
+                return False
+            for i in range(len(p)):
+                if p[i] == "?" or s[i] == p[i]:
+                    continue
+                else:
+                    return False
+            return True
         head = p[:p.find("*")]
-        tail = p[p.rfind("*"):]
-        if s.find(head) != 0:
+        tail = p[p.rfind("*")+1:]
+        if len(head) + len(tail) > len(s):
             return False
-        if s.rfind(tail) ==-1 or s.rfind(tail) + len(tail) != len(s):
-            return False
-        mid_s = s[len(head), -len(tail)]
-        mid_p = p[len(head), -len(tail)]
+        for i in range(len(head)):
+            if head[i] == "?" or head[i] == s[i]:
+                continue
+            else:
+                return False
+        for i in range(len(tail)):
+            if tail[i] == "?" or tail[i] == s[i-len(tail)]:
+                continue
+            else:
+                return False
+        if len(tail) == 0:
+            mid_s = s[len(head):]
+            mid_p = p[len(head):]
+        else:
+            mid_s = s[len(head): -len(tail)]
+            mid_p = p[len(head): -len(tail)]
         split_p = mid_p.split("*")
         last = mid_s
         for sub_p in split_p:
@@ -84,10 +112,11 @@ class Solution:
 
 def main():
     s = Solution()
-    sub = "????????"
-    full = "abcdefg"
-    i = s.nearestIdx(full, sub)
-    print("the ans is: %d" %i)
+    full = "aa"
+    sub = "aa"
+    i = s.isMatch(full, sub)
+    print("the ans is:")
+    print(i)
     return
 
 if __name__ == "__main__":
