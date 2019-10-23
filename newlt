@@ -17,4 +17,4 @@ if [ ! -f ${file_name} ]; then
     fi
 fi
 
-eval vim $file_name
+eval nvim $file_name
