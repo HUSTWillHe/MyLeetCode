@@ -7,14 +7,18 @@ from typing import List
 class Solution:
     ans = []
 
-    def one_step(self, ori: set, dst: List[int]) -> None:
+    def one_step(self, ori: set, dst: List[int]):
+        print("new circle=================")
+        print("ori: ", ori)
+        print("dst: ", dst)
         if len(ori) == 0:
             self.ans.append(dst)
-            return
+        inner_ori = set(ori)
+        inner_dst = list(dst)
         for i in ori:
-            dst.append(i)
-            ori.remove(i)
-            self.one_step(ori, dst)
+            inner_dst.append(i)
+            inner_ori.remove(i)
+            self.one_step(inner_ori, inner_dst)
 
     def premute(self, nums: List[int]) -> List[List[int]]:
         dst = []
