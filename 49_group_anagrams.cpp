@@ -2,100 +2,108 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <map>
+#include <utility>
 
 using namespace std;
+typedef vector<pair<string*, string>> VPSPS;
 
 class Solution {
-private:
-	void inner_sort(vector<pair<int, string&>> &vpis){
-		for(auto a : vpis){
-			sort(a.second.begin(), a.second.end());
-		}
-	}
-
-	vector<vector<string>> transInt2Str(const vector<vector<int>>& vvi, const vector<string>& strs){
-		vector<vector<string>> vvs;
-		for(auto a : vvi){
-			vector<string> vs;
-			for(int i : a){
-				vs.push_back(strs[i]);
-			}
-			vvs.push_back(vs);
-		}
-		return vvs;
-	}
 public:
-	vector<vector<string>> groupAnagrams(vector<string>& strs) {
-		vector<pair<int, string&>> vpis;
-		vector<vector<string>> vvs;
-		if (strs.size() == 0){
-			return vvs;
+	VPSPS vs2vpsps(const vector<string>& strs) {
+		VPSPS vpsps;
+		vector<string> vs(strs);
+		for(auto a : strs){
+			vs.push_back(a);
+			vpsps.push_back(pair<string*, string>(vs.data()+(vs.size()-1), a));
 		}
-		vector<string> new_vs(strs);
-		for(int i = 0; i < strs.size(); i++){
-			vpis.push_back(pair<int, string&>(i,new_vs[i]));
-		}
-		
-		inner_sort(vpis);
-		cout<<"after inner sort======================="<<endl;
-		for(auto a: vpis){
-			cout<<a.first<<" : "<<a.second<<endl;
-		}
-		cout<<"strs"<<endl;
-		for(auto a: strs){
-			cout<<a<<endl;
-		}
-		sort(vpis.begin(), vpis.end(), [](const pair<int, string&>& a, const pair<int, string&>& b) -> bool { return a.second < b.second;});
-		cout<<"after out sort============somethin went wrong================="<<endl;
-		for(auto a:vpis){
-			cout<<a.first<<" : "<<a.second<<endl;
-		}
-		cout<<"strs"<<endl;
-		for(auto a: strs){
-			cout<<a<<endl;
-		}
-		vector<vector<int>> vvi;
-		vector<int> vi;
-		vi.push_back(vpis[0].first);
-		for(int i = 1; i < vpis.size(); i++){
-			if(vpis[i].second == vpis[i-1].second){
-				vi.push_back(vpis[i].first);
-			}else{
-				vvi.push_back(vi);
-				vi.clear();
-				vi.push_back(vpis[i].first);
-			}
-		}
-		vvi.push_back(vi);
-		cout<<"get vvi "<<endl;
-		for(auto a: vvi){
-			cout<<"one level: "<<endl;
-			for(auto b: a){
-				cout<<b<<" : "<<strs[b]<<'\t';
-			}
-			cout<<endl;
-		}
-		cout<<"strs"<<endl;
-		for(auto a: strs){
-			cout<<a<<endl;
-		}
-		vvs = transInt2Str(vvi, strs);
+		return vpsps;
+	}
 
+	void innerSort(VPSPS& vpsps) {
+		for(auto v : vpsps){
+			sort((*(v.first)).begin(), (*(v.first)).end());		
+		}
+	}
+	
+	void outterSort(VPSPS& vpsps) {
+		sort(vpsps.begin(), vpsps.end(), [](const pair<string*, string>& a, const pair<string*, string>& b) -> bool {return *(a.first) > *(b.first);});
+	}
+
+	vector<vector<string>> vpsps2vvs(const VPSPS& vpsps) {
+		vector<vector<string>> vvs;
+		vector<string> vs;
+		string last = "";
+		for(auto v : vpsps){
+			string cur_str = *(v.first);
+			if(cur_str != last){
+				vvs.push_back(vs);
+				last = cur_str;
+				vs.clear();
+				vs.push_back(v.second);
+			}else{
+				vs.push_back(v.second);
+			}
+		}
+		vvs.push_back(vs);
 		return vvs;
 	}
+
+	vector<vector<string>> groupAnagrams(vector<string>& strs) {
+		VPSPS vpsps = vs2vpsps(strs);
+		innerSort(vpsps);
+		outterSort(vpsps);
+		vector<vector<string>> vvs;
+		vvs = vpsps2vvs(vpsps);
+		return vvs;
+	}
+	
 };
 
-int main(int argc,char** argv){
-	vector<string> vs = {"cccd", "a", "ab", "aabb", "baba", "ba", "abba",  "cdcc"};
+void printVpsps(const VPSPS& vpsps, string s){
+	cout<<s<<endl;
+	for(auto a: vpsps){
+			cout<<*a.first<<'\t'<<a.second<<endl;
+		}
+}
+
+void test(){
 	Solution s;
-	vector<vector<string>> vvs = s.groupAnagrams(vs);
-	for(auto a : vvs){
-		cout<<"same level: "<<endl;
-		for(auto s : a){
+	vector<string> vs;
+	vs.push_back("heliwei");
+	vs.push_back("liweihe");
+	vs.push_back("longwei");
+	vs.push_back("weilong");
+	VPSPS vpsps = s.vs2vpsps(vs);
+	printVpsps(vpsps, "make vector pair");
+
+	s.innerSort(vpsps);
+	printVpsps(vpsps, "after inner sort");
+
+	s.outterSort(vpsps);
+	printVpsps(vpsps, "after outter sort");
+
+	vector<vector<string>> vvs = s.vpsps2vvs(vpsps);
+	cout<<"the result: "<<endl;
+	for(auto vs: vvs){
+		for(auto s: vs){
 			cout<<s<<'\t';
 		}
 		cout<<endl;
 	}
+}
+
+void test2(){
+	vector<string> vs;
+	vs.push_back("heliwei");
+	vs.push_back("liweihe");
+	vs.push_back("longwei");
+	vs.push_back("weilong");
+
+	groupAnagrams(vs);
+}
+
+int main(int argc,char** argv){
+	//test();
+	test2();
     return 0;
 }
