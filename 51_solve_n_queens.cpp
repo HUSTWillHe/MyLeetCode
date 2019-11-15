@@ -28,48 +28,21 @@ public:
 		return string_result;
 	}
 	
-	void recursive(vector<int>& cur, vector<vector<int>>& result, int n){
+	void recursive(vector<int>& cur, set<int> sum, set<int> delta, vector<vector<int>>& result, int n){
 		if(cur.size() == n)
 			result.push_back(cur);
 		for(int i = 0; i < n; i++){
-			if(find(cur.begin(), cur.end(), i) == cur.end()){
+			int size = cur.size();
+			if(find(cur.begin(), cur.end(), i) == cur.end() &&
+					find(sum.begin(), sum.end(), size + i) == sum.end() &&
+					find(delta.begin(), delta.end(), size - i) == delta.end()){
+				sum.insert(size + i);
+				delta.insert(size - i);
 				cur.push_back(i);
-				recursive(cur, result, n);
+				recursive(cur, sum, delta, result, n);
+				sum.erase(size + i);
+				delta.erase(size - i);
 				cur.pop_back();
-			}
-		}
-	}
-
-	bool isAttack(vector<int> one_result){
-		int col = 0;
-		set<int> sum;
-		set<int> delta;
-		for(auto i: one_result){
-			if(find(sum.begin(), sum.end(), i + col) == sum.end()){
-				sum.insert(i + col);
-			}else{
-				return true;
-			}
-			if(find(delta.begin(), delta.end(), i - col) == delta.end()){
-				delta.insert(i - col);
-			}else{
-				return true;
-			}
-			col ++;
-		}
-		return false;
-	}
-
-	/**
-	 * @function: 检查对角线攻击
-	 * @param[in][out]: int_result
-	 * @return void 
-	 **/
-	void recheckResult(vector<vector<int>>& int_result){
-		for(int i = int_result.size() - 1; i >= 0; i--){
-			vector<vector<int>>::iterator it = int_result.begin() + i;
-			if(isAttack(*it)){
-				int_result.erase(it);
 			}
 		}
 	}
@@ -78,8 +51,9 @@ public:
 		vector<vector<int>> int_result;
 		vector<vector<string>> string_result;
 		vector<int> cur;
-		recursive(cur, int_result, n);
-		recheckResult(int_result);
+		set<int> sum;
+		set<int> delta;
+		recursive(cur, sum, delta, int_result, n);
 		string_result = convertStringFormating(int_result, n);
 		return string_result;
 	}
