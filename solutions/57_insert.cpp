@@ -15,7 +15,7 @@ public:
 		vector<pair<int, bool>> result;
 		int size = intervals.size();
 		int i;
-		for(i = 0; i < size(); i++){
+		for(i = 0; i < size; i++){
 			if(intervals[i][0] > newInterval[0]){
 				result.push_back(pair<int, bool>(i, true));
 				break;
@@ -24,11 +24,11 @@ public:
 				break;
 			}
 		}
-		for(int k = i; k < size(); k++){
-			if(intervals[k][0] > newInterval[0]){
+		for(int k = i; k < size; k++){
+			if(intervals[k][0] > newInterval[1]){
 				result.push_back(pair<int, bool>(k, true));
 				break;
-			}else if(intervals[k][1] > newInterval[0]){
+			}else if(intervals[k][1] > newInterval[1]){
 				result.push_back(pair<int, bool>(k, false));
 				break;
 			}
@@ -45,11 +45,13 @@ public:
 
 	vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval){
 		int size = intervals.size();
-		assert(size == 2);
 		if(intervals.size() == 0){
-			return vector<vector<int>>(newInterval);
+			return vector<vector<int>>{newInterval};
 		}
 		vector<pair<int, bool>> position = findIndex(intervals, newInterval);
+
+		cout<<"position:\n begin index: "<<position[0].first<<" front or mid: "<<position[0].second<<"\nend index: "<<position[1].first<<" front or mid: "<<position[1].second<<endl;;
+
 		vector<vector<int>> result;
 		if(position[0].first == size){
 			//边界条件，newInterval在intervals所有值的后面
@@ -74,7 +76,13 @@ public:
 			}
 		}else{
 			//newInterval与多个值有关
-			copy(intervals.begin(), intervals.begin() + position[0].first, result.begin());
+			//result.reserve(size + 1);
+			result.insert(result.end(), intervals.begin(), intervals.begin() + position[0].first);
+			//copy(intervals.begin(), intervals.begin() + position[0].first, result.begin());
+			cout<<"head copy"<<endl;
+			for(auto a: result){
+				cout<<a[0]<<'\t'<<a[1]<<endl;
+			}
 			int left, right;
 			if(position[0].second == true){
 				left = newInterval[0];
@@ -87,12 +95,20 @@ public:
 				right = intervals[position[1].first][1];
 			}
 			vector<int> merge_some{left, right};
+			cout<<"merge info: "<<left<<", "<<right<<endl;
 			result.push_back(merge_some);
 			if(position[1].second){
-				copy(intervals.begin() + position[1].first, intervals.end(), result.end());
+				result.insert(result.end(), intervals.begin() + position[1].first, intervals.end());
+				//copy(intervals.begin() + position[1].first, intervals.end(), result.end() - 1);
 			}else{
-				copy(intervals.begin() + position[1].first + 1, intervals.end(), result.end());
+				result.insert(result.end(), intervals.begin() + position[1].first + 1, intervals.end());
+				//copy(intervals.begin() + position[1].first + 1, intervals.end(), result.end() - 1);
 			}
+			cout<<"tail copyed"<<endl;
+			for(auto a: result){
+				cout<<a[0]<<' '<<a[1]<<endl;;
+			}
+			return result;
 		}
 		
 	}
@@ -100,6 +116,16 @@ public:
 
 int main(int argc,char** argv){
 	Solution s;
-	s.
+	vector<int> v{3, 7};
+	vector<vector<int>> vv{{1,2},{3,4},{5,6},{7,8},{9, 10}};
+	vector<vector<int>> result = s.insert(vv, v);
+	cout<<"the result: "<<endl;
+	cout<<"result size: "<<result.size()<<endl;
+	for(auto a: result){
+		for(auto b: a){
+			cout<<b<<'\t';
+		}
+		cout<<endl;
+	}
     return 0;
 }
