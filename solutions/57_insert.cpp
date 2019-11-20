@@ -19,7 +19,7 @@ public:
 			if(intervals[i][0] > newInterval[0]){
 				result.push_back(pair<int, bool>(i, true));
 				break;
-			}else if(intervals[i][1] > newInterval[0]){
+			}else if(intervals[i][1] >= newInterval[0]){
 				result.push_back(pair<int, bool>(i, false));
 				break;
 			}
@@ -28,7 +28,7 @@ public:
 			if(intervals[k][0] > newInterval[1]){
 				result.push_back(pair<int, bool>(k, true));
 				break;
-			}else if(intervals[k][1] > newInterval[1]){
+			}else if(intervals[k][1] >= newInterval[1]){
 				result.push_back(pair<int, bool>(k, false));
 				break;
 			}
@@ -60,9 +60,10 @@ public:
 			return result;
 		}else if(position[0].first == position[1].first){
 			//newInterval左右边界与一个值有关
+			result.reserve(size + 1);
 			if(position[0].second == position[1].second && position[0].second == true){
 				result = vector<vector<int>>(intervals.begin(), intervals.end());
-				result.insert(intervals.begin() + position[0].first, newInterval);
+				result.insert(result.begin() + position[0].first, newInterval);
 				return result;
 			}else{
 				if(position[0].second == false){
@@ -110,14 +111,13 @@ public:
 			}
 			return result;
 		}
-		
 	}
 };
 
 int main(int argc,char** argv){
 	Solution s;
-	vector<int> v{3, 7};
-	vector<vector<int>> vv{{1,2},{3,4},{5,6},{7,8},{9, 10}};
+	vector<int> v{7, 8};
+	vector<vector<int>> vv{{1, 7}};
 	vector<vector<int>> result = s.insert(vv, v);
 	cout<<"the result: "<<endl;
 	cout<<"result size: "<<result.size()<<endl;
