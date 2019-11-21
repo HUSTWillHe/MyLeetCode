@@ -1,0 +1,106 @@
+#!/bin/bash
+cd `dirname $0`
+
+bHelp=false
+bCntCpp=false
+bCntPy=false
+bCntLines=false
+bCntSolutions=false
+bCntAll=false
+
+get_param(){
+	if [[ $# == 0 ]]; then
+		bCntALl=true
+	else
+		ARGS=`getopt -o hcpsla --long help,cpp,python,py,solutions,lines,all -- "$@"`
+		if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
+		until [ $# -eq 0 ]
+		do
+			case "$1" in
+				-h|--help)
+					help
+					exit 0
+					;;
+				-c|--cpp)
+					bCntCpp=true
+					;;
+				-p|--py|--python)
+					bCntPy=true
+					;;
+				-s|--solutions)
+					bCntSolutions=true
+					;;
+				-l|--lines)
+					bCntLines=true
+					;;
+				-a|--all)
+					bCntAll=true
+					;;
+				*)
+					echo "wrong parameter: $1"
+					exit 1
+				;;
+			esac
+			shift
+		done
+	fi
+}
+
+process(){
+	cd ../solutions
+	if [[ $bCntAll == true ]]; then
+		cnt_solutions
+		cnt_cpp
+		cnt_py
+		cnt_lines
+		exit 0
+	fi
+	if [ $bCntSolutions = true ]; then
+		cnt_solutions
+	fi
+	if [ $bCntCpp = true ]; then
+		cnt_cpp
+	fi
+	if [ $bCntPy = true ]; then
+		cnt_py
+	fi
+	if [ $bCntLines = true ]; then
+		cnt_lines
+	fi
+}
+
+help(){
+	echo "Get statistics of solutions."
+	echo "Usage: $0 [-h] [--help] [-c] [--cpp] [-p] [--python] [--py] [-s] [--solutions] [-l] [--lines] [-a] [-all]"
+}
+
+cnt_lines(){
+	files=$(ls [0-9]*)
+	sum=0
+	for file in ${files}
+	do
+		lines=`eval cat ${file} | wc -l`
+		sum=$[sum+lines]
+	done
+	echo "All solutions has ${sum} lines."
+}
+
+cnt_py(){
+	py=$(ls *py | wc -l)
+	echo "Solutions include ${py} python files."
+}
+
+cnt_cpp(){
+	cpp=$(ls *cpp | wc -l)
+	echo "Solutions include ${cpp} cpp files."
+}
+
+cnt_solutions(){
+	total=$(ls [0-9]* | wc -l)
+	bak=$(ls *bak | wc -l)
+	solution_num=$[${total} - ${bak}]
+	echo "Total Solutions Number: ${solution_num}."
+}
+
+get_param $@
+process

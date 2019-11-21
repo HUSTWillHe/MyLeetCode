@@ -1,7 +1,0 @@
-#!/bin/bash
-cd `dirname $0`
-cd ../solutions/
-total=$(ls [0-9]* | wc -l)
-bak=$(ls *bak | wc -l)
-solution_num=$[${total} - ${bak}]
-echo "Total Solutions Number: ${solution_num}"
