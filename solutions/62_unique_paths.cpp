@@ -8,7 +8,7 @@ using namespace std;
 class Solution {
 public:
 	int uniquePaths(int m, int n){
-		vector<vector<int>> record(m, vector<int>(n, 0));
+		vector<int> record(n, 1);
 		if(m == 0 || n == 0){
 			return 0;
 		}
@@ -16,17 +16,11 @@ public:
 			return 1;
 		}
 		for(int i = 1; i < m; i++){
-			record[i][0] = 1;
-		}
-		for(int i = 1; i < n; i++){
-			record[0][i] = 1;
-		}
-		for(int i = 1; i < m; i++){
 			for(int k = 1; k < n; k++){
-				record[i][k] = record[i - 1][k] + record[i][k - 1];
+				record[k] += record[k-1]; 
 			}
 		}
-		return record[m-1][n-1];
+		return record[n-1];
 	}
 };
 
