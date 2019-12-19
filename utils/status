@@ -82,7 +82,7 @@ cnt_lines(){
 		lines=`eval cat ${file} | wc -l`
 		sum=$[sum+lines]
 	done
-	echo "All solutions has ${sum} lines."
+	echo "All solutions have ${sum} lines."
 }
 
 cnt_py(){

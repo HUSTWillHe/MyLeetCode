@@ -24,5 +24,5 @@ if [ ! -f ${file_name} ]; then
 fi
 
 pushd ../solutions
-eval nvim $file_name
+eval nvim $file_name +10
 popd
