@@ -14,29 +14,42 @@ public:
 		if(width == 0) return 0;
 		if(obstacleGrid[0][0] == 1) return 0;
 		obstacleGrid[0][0] = 1 - obstacleGrid[0][0];
+		bool findOne = false;
 		for(int i = 1; i < height; i++){
-			obstacleGrid[i][0] = 1 - obstacleGrid[i][0];
+			if(obstacleGrid[i][0]){
+				findOne = true;
+			}
+			obstacleGrid[i][0] = findOne ? 0 : 1;
 		}
+		findOne = false;
 		for(int i = 1; i < width; i++){
-			obstacleGrid[0][i] = 1 - obstacleGrid[0][i];
+			if(obstacleGrid[0][i]){
+				findOne = true;
+			}
+			obstacleGrid[0][i] = findOne?0:1;
 		}
+		vector<long long int> vlli(obstacleGrid[0].begin(), obstacleGrid[0].end());
 		for(int i = 1; i < height; i++){
+			vlli[0] = obstacleGrid[i][0];
 			for(int k = 1; k < width; k++){
-				obstacleGrid[i][k] = (obstacleGrid[i][k] == 1)?0:obstacleGrid[i - 1][k] + obstacleGrid[i][k - 1];
+				if(obstacleGrid[i][k] == 1)
+					vlli[k] = 0;
+				else
+					vlli[k] += vlli[k-1];
 			}
 		}
-		return obstacleGrid[height - 1][width - 1];
+		return vlli[width - 1];
 	}
 };
 
 int main(int argc,char** argv){
 	Solution s;
-	vector<int> v(3, 0);
-	vector<vector<int>> vv(4, v); 
+	vector<int> v(13, 0);
+	vector<vector<int>> vv(14, v); 
+	vv[1][0] = 1;
 	vv[1][1] = 1;
-	vector<int> n(1,0);
-	vector<vector<int>> vn(1,n);
-	int result = s.uniquePathsWithObstacles(vn);
+	vv[1][2] = 1;
+	int result = s.uniquePathsWithObstacles(vv);
 	cout<<"result: "<<result<<endl;
     return 0;
 }
