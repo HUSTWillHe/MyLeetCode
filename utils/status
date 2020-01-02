@@ -1,4 +1,11 @@
 #!/bin/bash
+#Copyright (c) 2020 Face++, Megvii. All Rights Reserved
+#
+#@File   : status
+#@Author : heliwei@megvii.com
+#@Date   : 2020-01-02 23:34
+#@Brief  : To get status of the project
+#
 cd `dirname $0`
 
 bHelp=false

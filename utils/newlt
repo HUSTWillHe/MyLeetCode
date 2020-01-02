@@ -1,4 +1,11 @@
 #!/bin/bash -e
+#Copyright (c) 2020 Face++, Megvii. All Rights Reserved
+#
+#@File   : newlt
+#@Author : heliwei@megvii.com
+#@Date   : 2020-01-02 23:34
+#@Brief  : To create a new leetcode solution. 
+#
 cd `dirname $0`
 if [[ x$1 == x ]]; then
     echo "usage: $0 <file_name>"
