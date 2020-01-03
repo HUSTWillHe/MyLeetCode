@@ -1,0 +1,131 @@
+#!/bin/bash
+#Copyright (c) 2020 Face++, Megvii. All Rights Reserved
+#
+#@File   : extract
+#@Author : heliwei@megvii.com
+#@Date   : 2020-01-02 23:34
+#@Brief  : To save the useful part of leetcode from a solution to clipboard, and print it.
+#
+SYSTEM=macos
+TYPE=cpp
+IS_SILENT=false
+INDEX=1
+FULL_NAME=""
+CONTENT=""
+
+NORMAL=$(tput sgr0)
+GREEN=$(tput setaf 2; tput bold)
+YELLOW=$(tput setaf 3)
+RED=$(tput setaf 1)
+
+function red(){
+	echo -e "$RED$*$NORMAL"
+}
+function green(){
+	echo -e "$GREEN$*$NORMAL"
+}
+function yellow() {
+	echo -e "$YELLOW$*$NORMAL"
+}
+
+function get_param(){
+	cd `dirname $0`
+	if [[ $# == 0 ]]; then
+		help
+	else
+		ARGS=`getopt -o hs --long help,silent -- "$@"`
+		if [ $? != 0 ] ; then 
+			red "Error argument!" 
+			exit 1
+		fi
+		until [ $# -eq 0 ]
+		do
+			case "$1" in
+				-h|--help)
+					help
+					;;
+				-s|--silent)
+					IS_SILENT=true
+					;;
+				[0-9]*)
+					INDEX=$1
+					;;
+				*)
+					red "Error argument!"
+					exit 1
+					;;
+			esac
+			shift
+		done
+	fi
+}
+
+function help(){
+	tput setaf 2
+	tput bold
+	cat<<EOF
+	Function: To save the useful part of leetcode from a solution to clipboard, and print it. You must have pbcopy installed on your MacOS.
+	Usage: $0 [-h] [--help] [-s] [--silent] <index> 
+	-h | --help: Print the help infomation.
+	-s | --silent: The result will be printed to standard output without this argument.
+EOF
+	tput sgr0
+	exit 0
+}
+
+function get_full_name(){
+	echo $INDEX | egrep "^[0-9]{1,3}$"
+	if [[ $? != 0 ]]; then
+		red "Error index!"
+		exit 1
+	fi
+	FULL_NAME=`ls ../solutions | egrep "^${INDEX}_"`
+	if [[ $? != 0 ]]; then
+		red "The index doesn't match a solution!"
+		exit 1
+	fi
+	green "Full name is: $FULL_NAME"
+}
+
+function extract_content(){
+	get_full_name
+	for i in $FULL_NAME; do
+		suffix="${i##*.}"
+		case $suffix in
+			cpp)
+				extract_cpp
+				;;
+			py)
+				extract_py
+				;;
+			*)
+				yellow "${suffix} is not supported."
+				;;
+		esac
+	done
+
+	if [[ $IS_SILENT == true ]]; then
+		green "Silent mode."
+	else
+		echo "$CONTENT"
+	fi
+
+	if [[ `uname` == Darwin ]]; then
+		echo "$CONTENT" | pbcopy
+	elif [[ `uname` == Linux ]]; then
+		yellow "Sorry, clipboard of Linux is not supported yet."
+	fi
+	green "The content has been saved to clipboard."
+	exit 0
+}
+
+function extract_cpp(){
+	CONTENT=`awk 'BEGIN{head=1000; tail=1000; terminal=0;} {if ($0 == "class Solution {") head=NR; if ($0 == "};" && terminal==0) {tail=NR; terminal=1;}if(NR >= head && NR <=tail) print $0;}' ../solutions/${FULL_NAME}` 
+}
+
+function extract_py(){
+	CONTENT=`awk 'BEGIN{head=1000; tail=1000;} {if($0 == "class Solution:") head=NR; if($0 == "def main():") tail=NR; if(NR>=head && NR<tail) print $0;}' ../solutions/${FULL_NAME}`
+}
+
+get_param $@
+extract_content

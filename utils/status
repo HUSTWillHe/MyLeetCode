@@ -17,7 +17,7 @@ bCntAll=false
 
 get_param(){
 	if [[ $# == 0 ]]; then
-		bCntALl=true
+		bCntAll=true
 	else
 		ARGS=`getopt -o hcpsla --long help,cpp,python,py,solutions,lines,all -- "$@"`
 		if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
