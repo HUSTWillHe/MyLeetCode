@@ -9,6 +9,7 @@
 SYSTEM=macos
 TYPE=cpp
 IS_SILENT=false
+DELETE_LOG=true
 INDEX=1
 FULL_NAME=""
 CONTENT=""
@@ -47,6 +48,9 @@ function get_param(){
 				-s|--silent)
 					IS_SILENT=true
 					;;
+				-l|--log)
+					DELETE_LOG=false
+					;;
 				[0-9]*)
 					INDEX=$1
 					;;
@@ -68,6 +72,7 @@ function help(){
 	Usage: $0 [-h] [--help] [-s] [--silent] <index> 
 	-h | --help: Print the help infomation.
 	-s | --silent: The result will be printed to standard output without this argument.
+	-l | --log: Without this parameter, script will delete all logs as default.  
 EOF
 	tput sgr0
 	exit 0
@@ -103,6 +108,10 @@ function extract_content(){
 				;;
 		esac
 	done
+	
+	if [[ $DELETE_LOG == true ]]; then
+		delete_log
+	fi
 
 	if [[ $IS_SILENT == true ]]; then
 		green "Silent mode."
@@ -125,6 +134,32 @@ function extract_cpp(){
 
 function extract_py(){
 	CONTENT=`awk 'BEGIN{head=1000; tail=1000;} {if($0 == "class Solution:") head=NR; if($0 == "def main():") tail=NR; if(NR>=head && NR<tail) print $0;}' ../solutions/${FULL_NAME}`
+}
+
+function delete_log(){
+	for i in $FULL_NAME; do
+		suffix="${i##*.}"
+		case $suffix in
+			cpp)
+				delete_cpp_log
+				;;
+			py)
+				delete_py_log
+				;;
+			*)
+				yellow "${suffix} is not supported."
+				;;
+		esac
+	done
+
+}
+
+function delete_cpp_log(){
+	CONTENT=`echo "$CONTENT" | sed '/cout/d; /log/d'`
+}
+
+function delete_py_log(){
+	CONTENT=`echo "$CONTENT" | sed '/print/d; /log/d'`
 }
 
 get_param $@
