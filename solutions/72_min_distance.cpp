@@ -34,15 +34,12 @@ public:
 		vector<int> vi(len2 + 1, 0);
 		vector<vector<int>> vvi(len1 + 1, vi);
 		cout<<"after init"<<endl;
-		printAns(word1, word2, vvi);
 		for(int i = 0; i < len1 + 1; i++){
 			vvi[i][0] = i;
 		}
 		for(int i = 0; i < len2 + 1; i++){
 			vvi[0][i] = i;
 		}
-		cout<<"before action: "<<endl;
-		printAns(word1, word2, vvi);
 
 		for(int i = 1; i < len1 + 1; i++){
 			for(int k  = 1; k < len2 + 1; k++){
@@ -53,9 +50,6 @@ public:
 				}
 			}
 		}
-
-		cout<<"ANSWER: "<<endl;
-		printAns(word1, word2, vvi);
 		return vvi[len1][len2];
 	}
 };
