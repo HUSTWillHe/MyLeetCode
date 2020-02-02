@@ -6,29 +6,21 @@ from typing import List
 
 class Solution:
     def combine(self, n: int, k: int) -> List[List[int]]:
-        if n <= 0 or k <= 0 or n < k:
-            return [[]]
-        d = dict()
-        d[(1, 1)] = [[1]]
-        for i in range(2, n + 1):
-            d[(i, 1)] = d[(i - 1, 1)] + [[i]]
-        if k == 1:
-            return d[(n, 1)]
+        if n <= 0 or k <= 0 or k > n:
+            return []
+        ans = []
+        self.__combine(n, k, 1, [], ans)
+        return ans
 
-        for i in range(2, k + 1):
-            d[(i, i)] = [d[(i - 1, i - 1)][0] + [i]]
-        if k == n:
-            return d[(n, k)]
+    def __combine(self, n: int, k: int, start: int, temp: List[int], ans: List[List[int]]):
+        temp.append(start)
+        if len(temp) == k:
+            ans.append(temp[:])
+            return
 
-        for i in range(2, k + 1):
-            for j in range(i + 1, n + 1):
-                d[(j, i)] = d[(j - 1, i)][:]
-                for m in d[(j - 1, i - 1)]:
-                    new_ele = [m + [j]]
-                    d[(j, i)] += new_ele
-                print("d[(%d, %d)]" % (j, i))
-                print(d[(j, i)])
-        return d[(n, k)]
+        for i in range(start, n + 1):
+            self.__combine(n, k, i + 1, temp, ans)
+            temp.pop()
 
 
 def main():
