@@ -68,7 +68,7 @@ function help(){
 	tput setaf 2
 	tput bold
 	cat<<EOF
-	Function: To save the useful part of leetcode from a solution to clipboard, and print it. You must have pbcopy installed on your MacOS.
+	Function: To save the useful part of leetcode from a solution to clipboard, and print it. You must have pbcopy installed on your MacOS, or xlicp installed on your Linux machine.
 	Usage: $0 [-h] [--help] [-s] [--silent] <index> 
 	-h | --help: Print the help infomation.
 	-s | --silent: The result will be printed to standard output without this argument.
@@ -122,7 +122,7 @@ function extract_content(){
 	if [[ `uname` == Darwin ]]; then
 		echo "$CONTENT" | pbcopy
 	elif [[ `uname` == Linux ]]; then
-		yellow "Sorry, clipboard of Linux is not supported yet."
+		echo "$CONTENT" | xclip -selection c
 	fi
 	green "The content has been saved to clipboard."
 	exit 0
