@@ -79,7 +79,7 @@ EOF
 }
 
 function get_full_name(){
-	echo $INDEX | egrep "^[0-9]{1,3}$"
+	echo $INDEX | egrep "^[0-9]{1,4}$"
 	if [[ $? != 0 ]]; then
 		red "Error index!"
 		exit 1
