@@ -34,7 +34,7 @@ function get_param(){
 	if [[ $# == 0 ]]; then
 		help
 	else
-		ARGS=`getopt -o hs --long help,silent -- "$@"`
+		ARGS=`getopt -o hsl --long help,silent,log -- "$@"`
 		if [ $? != 0 ] ; then 
 			red "Error argument!" 
 			exit 1
