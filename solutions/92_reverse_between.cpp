@@ -17,15 +17,17 @@ public:
 		ListNode* return_head = head;
 		ListNode* before = NULL;
 		ListNode* top = head;
-		if(m != 0){
-			for(int i = 0; i < m - 1; i++){
+		if(m == 0)
+			return head;
+		if(m > 1){
+			for(int i = 0; i < m - 2; i++){
 				top = top -> next;
 			}
 			before = top;
 			top = top -> next;
 		}
 		ListNode* cur = top -> next, *last = top;
-		for(int i = 0; i < n - m - 1; i++){
+		for(int i = 0; i < n - m; i++){
 			ListNode* next = cur -> next;
 			cur -> next = last;
 			last = cur;
@@ -34,11 +36,10 @@ public:
 		top -> next = cur;
 		if(before != NULL)
 			before -> next = last;
-		if(m == 0)
+		if(m <= 1)
 			return_head = last;
 		return return_head;
 	}
-	
 };
 
 int main(int argc,char** argv){
@@ -59,7 +60,7 @@ int main(int argc,char** argv){
 	}
 	cout<<endl;
 
-	ListNode* ans = s.reverseBetween(pln[0], 3, 5);
+	ListNode* ans = s.reverseBetween(pln[0], 1, 5);
 
 	node = ans;
 	while(node != NULL){
