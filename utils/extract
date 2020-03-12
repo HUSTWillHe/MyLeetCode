@@ -129,7 +129,7 @@ function extract_content(){
 }
 
 function extract_cpp(){
-	CONTENT=`awk 'BEGIN{head=1000; tail=1000; terminal=0;} {if ($0 == "class Solution {") head=NR; if ($0 == "};" && terminal==0) {tail=NR; terminal=1;}if(NR >= head && NR <=tail) print $0;}' ../solutions/${FULL_NAME}` 
+	CONTENT=`awk 'BEGIN{head=1000; tail=1000; terminal=0;} {if ($0 == "class Solution {") head=NR; if ($0 == "};" && terminal==0 && tail!=1000) {tail=NR; terminal=1;}if(NR >= head && NR <=tail) print $0;}' ../solutions/${FULL_NAME}` 
 }
 
 function extract_py(){
