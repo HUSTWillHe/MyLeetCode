@@ -8,32 +8,28 @@ using namespace std;
 class Solution {
 public:
 	void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
-		if(m == 0){
-			nums1 = nums2;
+		int size = nums1.size();
+		if(m + n != size){
 			return;
 		}
-		if(n == 0)
-			return;
-		int i = 0, k = 0;
-		vector<int> ans;
-		while(i < m | k < n){
-			if(i == m){
-				ans.insert(ans.end(), nums2.begin() + k, nums2.begin() + n);
-				break;
+		int i = m - 1, k = n - 1;
+		while(1){
+			if(k < 0)
+				return;
+			if(i < 0){
+				for(int ii = 0; ii <= k; ii ++){
+					nums1[ii] = nums2[ii];
+				}
+				return;
 			}
-			if(k == n){
-				ans.insert(ans.end(), nums1.begin() + i, nums1.begin() + m);
-				break;
-			}
-			if(nums1[i] < nums2[k]){
-				ans.push_back(nums1[i]);
-				i++;
+			if(nums1[i] > nums2[k]){
+				nums1[i + k + 1] = nums1[i];
+				i--;
 			}else{
-				ans.push_back(nums2[k]);
-				k++;
+				nums1[i + k + 1] = nums2[k];
+				k--;
 			}
 		}
-		nums1 = ans;
 	}
 };
 
