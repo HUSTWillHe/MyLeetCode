@@ -19,8 +19,13 @@ struct Point {
 class Solution {
 private:
 	bool is_surround(vector<vector<char>>& board, Point p, set<Point>& used_point){
+		cout<<"----------------"<<endl;
+		cout<<"current p: "<<p.x<<" "<<p.y<<endl;
+		if(board[p.x][p.y] == 'X')
+			return true;
+		if(board[p.x][p.y] == 'a')
+			return false;
 		if(p.x == 0 || p.x == board.size() || p.y == 0 || p.y == board[0].size()){
-			board[p.x][p.y] = 'a';
 			return false;
 		}
 		bool ans = true;
@@ -33,10 +38,7 @@ private:
 				}
 			}
 		}
-		if(ans)
-			board[p.x][p.y] = 'X';
-		else
-			board[p.x][p.y] = 'a';
+		cout<<"ans: "<<ans<<endl;
 		return ans;
 	}
 public:
@@ -50,8 +52,19 @@ public:
 		for(int i = 0; i < height; i++){
 			for(int j = 0; j < width; j++){
 				if(board[i][j] == 'O'){
-					set<Point> used_point;
-					is_surround(board, Point(i, j), used_point);
+					cout<<"============================"<<endl;
+					cout<<"new enter: "<<i<<" "<<j<<endl; 
+					set<Point> used_point{};
+					bool b = is_surround(board, Point(i, j), used_point);
+					for(set<Point>::iterator it = used_point.begin(); it != used_point.end(); it++){
+						board[(*it).x][(*it).y] = b ? 'X': 'a';
+					}
+					for(auto line: board){
+						for(auto c : line){
+							cout<<c<<'\t';
+						}
+						cout<<endl;
+					}
 				}
 			}
 		}
@@ -72,7 +85,15 @@ int main(int argc,char** argv){
 	board[0][2] = 'O';
 	board[1][2] = 'O';
 	board[1][1] = 'O';
+	cout<<"before:======="<<endl;
+	for(auto line: board){
+		for(auto c : line){
+			cout<<c<<'\t';
+		}
+		cout<<endl;
+	}
 	s.solve(board);
+	cout<<"after:======="<<endl;
 	for(auto line: board){
 		for(auto c : line){
 			cout<<c<<'\t';
