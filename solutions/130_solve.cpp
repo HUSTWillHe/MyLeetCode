@@ -6,6 +6,16 @@
 #include <math.h>
 
 using namespace std;
+
+void print_board(const vector<vector<char>> &board){
+	for(auto v: board){
+		for(auto c: v){
+			cout<<c<<'\t';
+		}
+		cout<<endl;
+	}
+}
+
 struct Point {
 	int x, y;
 	Point(int xx, int yy): x(xx), y(yy){}
@@ -19,26 +29,25 @@ struct Point {
 class Solution {
 private:
 	bool is_surround(vector<vector<char>>& board, Point p, set<Point>& used_point){
-		cout<<"----------------"<<endl;
-		cout<<"current p: "<<p.x<<" "<<p.y<<endl;
+		cout<<"is surround:================= "<<endl;
+		cout<<"current point: x: "<<p.x<<" y: "<<p.y<<endl;
+		cout<<"current board"<<endl;
+		print_board(board);
 		if(board[p.x][p.y] == 'X')
 			return true;
 		if(board[p.x][p.y] == 'a')
 			return false;
-		if(p.x == 0 || p.x == board.size() || p.y == 0 || p.y == board[0].size()){
+		used_point.insert(p);
+		if(p.x == 0 || p.x == board.size() - 1 || p.y == 0 || p.y == board[0].size() - 1){
 			return false;
 		}
 		bool ans = true;
-		for(int i = 0; i < 2; i++){
-			for(int j = 0; j < 2; j++){
-				Point new_p = Point(p.x + pow(-1, i), p.y + pow(-1, j));
-				if(used_point.find(new_p) == used_point.end()){
-					used_point.insert(new_p);
-					ans &= is_surround(board, new_p, used_point);
-				}
+		vector<Point> points_around{Point(p.x, p.y + 1), Point(p.x, p.y - 1), Point(p.x + 1, p.y), Point(p.x - 1, p.y)};
+		for(auto new_p : points_around){
+			if(used_point.find(new_p) == used_point.end()){
+				ans &= is_surround(board, new_p, used_point);
 			}
 		}
-		cout<<"ans: "<<ans<<endl;
 		return ans;
 	}
 public:
@@ -52,18 +61,11 @@ public:
 		for(int i = 0; i < height; i++){
 			for(int j = 0; j < width; j++){
 				if(board[i][j] == 'O'){
-					cout<<"============================"<<endl;
-					cout<<"new enter: "<<i<<" "<<j<<endl; 
 					set<Point> used_point{};
 					bool b = is_surround(board, Point(i, j), used_point);
+					cout<<"b: "<<b<<endl;
 					for(set<Point>::iterator it = used_point.begin(); it != used_point.end(); it++){
 						board[(*it).x][(*it).y] = b ? 'X': 'a';
-					}
-					for(auto line: board){
-						for(auto c : line){
-							cout<<c<<'\t';
-						}
-						cout<<endl;
 					}
 				}
 			}
@@ -82,23 +84,14 @@ int main(int argc,char** argv){
 	Solution s;
 	vector<char> line(4, 'X');
 	vector<vector<char>> board(4, line);
-	board[0][2] = 'O';
-	board[1][2] = 'O';
 	board[1][1] = 'O';
+	board[1][2] = 'O';
+	board[2][2] = 'O';
+	board[3][1] = 'O';
 	cout<<"before:======="<<endl;
-	for(auto line: board){
-		for(auto c : line){
-			cout<<c<<'\t';
-		}
-		cout<<endl;
-	}
+	print_board(board);
 	s.solve(board);
 	cout<<"after:======="<<endl;
-	for(auto line: board){
-		for(auto c : line){
-			cout<<c<<'\t';
-		}
-		cout<<endl;
-	}
+	print_board(board);
     return 0;
 }
