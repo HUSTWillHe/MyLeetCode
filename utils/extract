@@ -84,7 +84,7 @@ function get_full_name(){
 		red "Error index!"
 		exit 1
 	fi
-	FULL_NAME=`ls ../solutions | egrep "^${INDEX}_"`
+	FULL_NAME=`ls ../solutions | egrep "^${INDEX}_.*\.(cpp|py)"`
 	if [[ $? != 0 ]]; then
 		red "The index doesn't match a solution!"
 		exit 1
