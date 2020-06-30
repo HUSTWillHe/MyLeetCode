@@ -23,7 +23,10 @@ public:
 				}
 			}
 		}
-		if(*(match_points.end() - 1) == size - 1)
+		cout<<"match points: "<<endl;
+		for(auto a: match_points)
+			cout<<a<<endl;
+		if(*(match_points.end() - 1) == size)
 			return true;
 		else
 			return false;
@@ -32,8 +35,10 @@ public:
 
 int main(int argc,char** argv){
 	Solution s;
-	vector<string> vs{"cat", "dog", "cats", "sands", "and"};
-	string st = "catsandog";
+	//vector<string> vs{"cat", "dog", "cats", "sands", "and"};
+	//string st = "catsandog";
+	vector<string> vs{"leet", "code"};
+	string st = "leetcode";
 	bool ans = s.wordBreak(st, vs);
 	cout<<"ans is : "<<ans<<endl;
     return 0;
