@@ -8,22 +8,23 @@ using namespace std;
 struct ListNode{
 	int val;
 	ListNode* next;
+	ListNode(): val(0), next(NULL) {}
 	ListNode(int x): val(x), next(NULL) {}
+	ListNode(int x, ListNode *next): val(x), next(next) {}
 };
 
-void printListNode(ListNode* head){
+void printNodes(ListNode* head){
 	while(head != NULL){
-		cout<<head -> val<<" -> ";
-		head =  head -> next;
+		cout<<head->val<<" -> ";
+		head = head -> next;
 	}
 	cout<<"NULL"<<endl;
 }
 
 class Solution {
 private:
-	ListNode* flip_tail(ListNode* head){
-		ListNode* fast = head;
-		ListNode* slow = head;
+	ListNode* towardMid(ListNode* head){
+		ListNode *fast = head, *slow = head;
 		while(true){
 			fast = fast -> next;
 			if(fast == NULL)
@@ -33,45 +34,46 @@ private:
 				break;
 			slow = slow -> next;
 		}
+		cout<<"mid val: "<<slow -> val<<endl;
 		ListNode* cur_next = slow -> next;
-		slow -> next = NULL;
-		while(cur_next != NULL){
+		ListNode* cur = slow;
+		while(! cur_next){
 			ListNode* next_next = cur_next -> next;
-			cur_next -> next = slow;
-			slow = cur_next;
+			cur_next -> next = cur;
+			cur = cur_next;
 			cur_next = next_next;
 		}
-		return slow;
+		slow -> next = NULL;
+		cout<<"tail val: "<<cur -> val<<endl;
+		return cur;
 	}
 public:
 	void reorderList(ListNode* head){
 		if(head == NULL)
 			return;
-		ListNode* tail;
-		tail = flip_tail(head);
+		ListNode* tail = towardMid(head);
 		while(head != NULL && head != tail){
-			ListNode *head_next = head -> next, *tail_next = tail -> next;
+			ListNode* head_next = head -> next;
+			ListNode* tail_next = tail -> next;
 			head -> next = tail;
 			tail -> next = head_next;
 			head = head_next;
 			tail = tail_next;
 		}
-	}
+	}	
 };
 
 int main(int argc,char** argv){
 	Solution s;
-	vector<int> vi{1, 2, 3, 4, 5};
 	vector<ListNode> vln;
-	for(int i = 0; i < vi.size(); i++){
-		vln.push_back(ListNode(vi[i]));
+	for(int i = 0; i < 5; i++){
+		vln.push_back(ListNode(i));
 	}
-	for(int i = 0; i < vi.size() - 1; i++){
+	for(int i = 0; i < vln.size() - 1; i++){
 		vln[i].next = &(vln[i + 1]);
 	}
-	printListNode(vln.data());
+	printNodes(vln.data());
 	s.reorderList(vln.data());
-	cout<<"after =============="<<endl;
+	printNodes(vln.data());
     return 0;
-	printListNode(vln.data());
 }
