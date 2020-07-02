@@ -37,7 +37,7 @@ private:
 		cout<<"mid val: "<<slow -> val<<endl;
 		ListNode* cur_next = slow -> next;
 		ListNode* cur = slow;
-		while(! cur_next){
+		while(cur_next != NULL){
 			ListNode* next_next = cur_next -> next;
 			cur_next -> next = cur;
 			cur = cur_next;
