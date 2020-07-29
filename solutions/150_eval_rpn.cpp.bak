@@ -1,0 +1,78 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <deque>
+#include <map>
+#include <assert.h>
+
+using namespace std;
+template <typename T>
+using func_p = T(*)(T, T);
+
+class Solution {
+public:
+	deque<int> numbers;
+	map<string, func_p<int>> functions{{"+", addition}, {"-", subtraction}, {"*", mutiplication}, {"/", division}};
+
+	bool is_digit(const string &str){
+		if(str[0] == '-' && str.size() > 1){
+			return all_of(str.begin() + 1, str.end(), ::isdigit);
+		}else{
+			return all_of(str.begin(), str.end(), ::isdigit);
+		}
+	}
+	
+	template<typename T>
+	static T addition(T a, T b){
+		return a+b;
+	}
+	
+	template<typename T>
+	static T subtraction(T a, T b){
+		return a-b;
+	}
+	
+	template<typename T>
+	static T mutiplication(T a, T b){
+		return a*b;
+	}
+	
+	template<typename T>
+	static T division(T a, T b){
+		return a/b;
+	}
+
+	int evalRPN(vector<string>& tokens){
+		if(tokens.size() == 0)
+			return 0;
+		for(auto a: tokens){
+			cout<<"----------------"<<endl;
+			cout<<"a"<<endl;
+			if(is_digit(a)){
+				numbers.push_back(stoi(a));
+			}else{
+				int second = numbers.back();
+				numbers.pop_back();
+				int first = numbers.back();
+				numbers.pop_back();
+				int ans = functions[a](first, second);
+				numbers.push_back(ans);
+			}
+			for(auto n: numbers){
+				cout<<n<<"   ";
+			}
+			cout<<endl;
+		}
+		assert(numbers.size() == 1);
+		return numbers.back();
+	}
+};
+
+int main(int argc,char** argv){
+	Solution s;
+	vector<string> vs{"10","6","9","3","+","-11","*","/","*","17","+","5","+"};
+	int ans = s.evalRPN(vs);
+	cout<<"ans: "<<ans<<endl;
+    return 0;
+}
