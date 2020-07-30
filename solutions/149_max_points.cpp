@@ -40,7 +40,7 @@ public:
 			}
 		}else{
 			double slope = double(b[1] - a[1])/double(b[0] - a[0]);
-			double height = a[1] - slope * a[0];
+			double height = double(a[1]*b[0] - a[0]*b[1])/double(b[0] - a[0]);
 			cout<<"slope"<<slope<<"  height: "<<height<<endl;
 			if(storage.find(slope) == storage.end()){
 				map<double, set<vector<int>>> temp;
